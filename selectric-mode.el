@@ -32,6 +32,12 @@
 
 (defvar selectric-mode-map (make-sparse-keymap) "Selectric mode's keymap.")
 
+(defcustom selectric-sound-player
+  (if (eq system-type 'darwin) "aflay" "paplay")
+  "The program that will play the sound file."
+  :type 'string
+  :group 'selectric)
+
 (defvar selectric-affected-bindings-list
   '("<up>" "<down>" "<right>" "<left>" "DEL" "C-d")
   "The keys we'll override.")
@@ -45,10 +51,8 @@
     (puthash key (key-binding (kbd key)) hashmap)))
 
 (defun selectric-make-sound (sound-file-name)
-  "Play sound from file SOUND-FILE-NAME using platform-appropriate program."
-  (if (eq system-type 'darwin)
-      (start-process "*Messages*" nil "afplay" sound-file-name)
-    (start-process "*Messages*" nil "aplay" sound-file-name)))
+  "Play sound from file SOUND-FILE-NAME."
+  (start-process "*Messages*" nil selectric-sound-player sound-file-name))
 
 (defun selectric-type-sound ()
   "Make the sound of the printing element hitting the paper."
